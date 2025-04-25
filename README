@@ -3,8 +3,7 @@ https://youtu.be/wE76sMKUr_w
 
 Main Use-Case Flow from demo:
 1) Manager create listing
-2) Applicant - 
-   - sign in as user who gets 2-room
+2) Applicant - sign in as user who gets 2-room
    - View listing
    - Apply for a Project 
    - View My Application Status  
@@ -18,8 +17,7 @@ Main Use-Case Flow from demo:
    - View Registration Status
    - View Assigned Project Details  
    - Process Flat Booking  
-   - Update Flat Availability  
-   - Modify user to 3-room
+   - Update Flat Availability (Modify applicant's application to 3-room)
    - Generate receipts
    - Change password eg for Officer
 
