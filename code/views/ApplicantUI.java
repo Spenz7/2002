@@ -160,7 +160,8 @@ public class ApplicantUI {
             applicant.getNric(),
             applicant.getName(), // Added applicant name here
             selectedProject.getName(),
-            FlatType.values()[selectedProject.getFlatType()],  // Add flatType here
+            //FlatType.values()[selectedProject.getFlatType()],
+            selectedProject.getFlatType(),
             ApplicationStatus.PENDING
         );
 
@@ -175,7 +176,7 @@ public class ApplicantUI {
 
     private boolean isEligibleForProject(BTOProject project) {
         if (applicant.getMaritalStatus().equals("Single")) {
-            return applicant.getAge() >= 35 && project.getFlatType() == 2;
+            return applicant.getAge() >= 35 && project.getFlatType() == FlatType.TWO_ROOM ;
         } else if (applicant.getMaritalStatus().equals("Married")) {
             return applicant.getAge() >= 21;
         }

@@ -1,6 +1,5 @@
 package models;
 
-import models.enums.FlatType;
 import models.enums.*;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +20,7 @@ public class BTOProject {
     private String manager;   // Manager for the project
     private int officerSlot;  // Number of officer slots available
     private List<String> officers; // List of officers assigned to the project
+    private FlatType flatType;
 
     private boolean visibility = true; // Default to visible
 
@@ -211,11 +211,13 @@ public class BTOProject {
                 '}';
     }
 
-    public int getFlatType() {
-        if (type1.toLowerCase().contains("2") || type2.toLowerCase().contains("2")) {
-            return 2; // Represents "2-Room"
-        }
-        return 0; // Represents no "2-Room" type
+    public FlatType getFlatType() {
+        // if (type1.toLowerCase().contains("2") || type2.toLowerCase().contains("2")) {
+        //     return 2; // Represents "2-Room"
+        // }
+        // return 0; // Represents no "2-Room" type
+        return this.flatType;
+
     }
 
     public void setFlatType(int flatType) {
