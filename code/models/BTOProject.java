@@ -191,25 +191,31 @@ public class BTOProject {
         return availability;
     }
 
+    // @Override
+    // public String toString() {
+    //     return "BTOProject{" +
+    //             "name='" + name + '\'' +
+    //             ", neighborhood='" + neighborhood + '\'' +
+    //             ", type1='" + type1 + '\'' +
+    //             ", unitsType1=" + unitsType1 +
+    //             ", priceType1=" + priceType1 +
+    //             ", type2='" + type2 + '\'' +
+    //             ", unitsType2=" + unitsType2 +
+    //             ", priceType2=" + priceType2 +
+    //             ", openingDate=" + openingDate +
+    //             ", closingDate=" + closingDate +
+    //             ", manager='" + manager + '\'' +
+    //             ", officerSlot=" + officerSlot +
+    //             ", officers=" + officers +
+    //             ", visibility=" + visibility +
+    //             '}';
+    // }
+
     @Override
     public String toString() {
-        return "BTOProject{" +
-                "name='" + name + '\'' +
-                ", neighborhood='" + neighborhood + '\'' +
-                ", type1='" + type1 + '\'' +
-                ", unitsType1=" + unitsType1 +
-                ", priceType1=" + priceType1 +
-                ", type2='" + type2 + '\'' +
-                ", unitsType2=" + unitsType2 +
-                ", priceType2=" + priceType2 +
-                ", openingDate=" + openingDate +
-                ", closingDate=" + closingDate +
-                ", manager='" + manager + '\'' +
-                ", officerSlot=" + officerSlot +
-                ", officers=" + officers +
-                ", visibility=" + visibility +
-                '}';
+        return String.format("%s (%s)", this.name, this.neighborhood); // Display project name and neighborhood only
     }
+
 
     public FlatType getFlatType() {
         // if (type1.toLowerCase().contains("2") || type2.toLowerCase().contains("2")) {

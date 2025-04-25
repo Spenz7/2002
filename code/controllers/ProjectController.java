@@ -26,9 +26,14 @@ public class ProjectController {
 
     // Adds a new BTO project to the list
     public void createProject(BTOProject project) {
-        projects.add(project);
-        System.out.println("Project added: " + project.getProjectName());
+        if (projects.stream().noneMatch(p -> p.getProjectName().equalsIgnoreCase(project.getProjectName()))) {
+            projects.add(project);
+            System.out.println("Project added: " + project.getProjectName());
+        } else {
+            System.out.println("Duplicate project ignored: " + project.getProjectName());
+        }
     }
+
 
     // Toggles the visibility of a project
     public boolean toggleProjectVisibility(String projectName, boolean visibility) {
@@ -49,8 +54,10 @@ public class ProjectController {
                 .filter(BTOProject::isVisible) // Filter visible projects
                 .filter(project -> officer.getAssignedProject() == null || // Not already assigned
                         !officer.getAssignedProject().overlaps(project)) // No overlap with current project
+                .distinct() // Ensure no duplicates
                 .collect(Collectors.toList());
     }
+
 
     // Retrieve visible projects for applicants based on eligibility
     public List<BTOProject> getVisibleProjects(Applicant applicant) {

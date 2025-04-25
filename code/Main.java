@@ -36,11 +36,6 @@ public class Main {
         FilterController filterController = new FilterController();
         BookingController bookingController = new BookingController();
 
-        // Use a copy of the projects list to avoid modifying the original while iterating
-        List<BTOProject> projectListCopy = new ArrayList<>(projects);
-        for (BTOProject project : projectListCopy) {
-            projectController.createProject(project);
-        }
 
         // Start the Console UI
         ConsoleUI consoleUI = new ConsoleUI(
