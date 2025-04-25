@@ -117,6 +117,8 @@ public class ApplicantUI {
     private void viewAvailableProjects() {
         List<BTOProject> projects = projectController.getVisibleProjects(applicant);
         System.out.println("\nAvailable Projects:");
+        System.out.println("Note that the 1st option is just an example and hasn't been created by the manager");
+        System.out.println("1st project can't be applied as it's just an example, manager needs to create one first");
         for (int i = 0; i < projects.size(); i++) {
             System.out.printf("%d. %s\n", i + 1, projects.get(i));
         }
@@ -124,6 +126,8 @@ public class ApplicantUI {
 
     private void applyForProject() {
         System.out.println("\n=== Apply for a Project ===");
+        System.out.println("Note that the 1st option is just an example and hasn't been created by the manager");
+        System.out.println("1st project can't be applied as it's just an example, manager needs to create one first");
 
         // Display available projects for the applicant's group
         List<BTOProject> availableProjects = projectController.getProjectsForApplicant(

@@ -13,6 +13,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+
 public class ManagerController {
     private List<HDBOfficer> officers; // List of all registered HDB officers
 
@@ -21,47 +26,72 @@ public class ManagerController {
     }
 
     // Approves or denies officer registrations based on eligibility criteria
-    public boolean handleOfficerRegistration(String officerNric, boolean approve) {
-        // Define the file path
-        Path filePath = Paths.get("code", "data", "officerregistrations.csv");
+    public void handleOfficerRegistration(String officerNric, boolean approve) {
+        
+        String registrationsFilePath = "data/OfficerRegistrations.csv";
+        String officersFilePath = "data/OfficerList.csv";
 
-        try {
-            // Ensure the directory exists
-            Files.createDirectories(filePath.getParent());
 
-            // Read all lines from the CSV file
-            List<String> lines = Files.exists(filePath)
-                    ? Files.readAllLines(filePath)
-                    : new ArrayList<>();
+        boolean officerFound = false;
+        boolean registrationFound = false;
+        String projectName = "";
+        List<String[]> registrations = new ArrayList<>();
 
-            boolean found = false;
-
-            for (int i = 0; i < lines.size(); i++) {
-                String[] parts = lines.get(i).split(",");
-                if (parts[0].equalsIgnoreCase(officerNric)) {
-                    // Update the status in memory
-                    String newStatus = approve ? ApplicationStatus.APPROVED.name() : ApplicationStatus.DENIED.name();
-                    lines.set(i, parts[0] + "," + parts[1] + "," + newStatus);
-                    found = true;
+        // Read OfficerList.csv to confirm if the officer exists
+        try (BufferedReader br = new BufferedReader(new FileReader(officersFilePath.toString()))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                if (values.length >= 2 && values[1].equalsIgnoreCase(officerNric)) {
+                    officerFound = true;
                     break;
                 }
             }
+        } catch (IOException e) {
+            System.out.println("Error reading officer list file: " + officersFilePath.toString() + " - " + e.getMessage());
+        }
 
-            if (found) {
-                // Write all lines back to the CSV file
-                Files.write(filePath, lines);
-                System.out.println("Registration for officer '" + officerNric + "' has been: " +
-                        (approve ? "Approved" : "Denied"));
-                return true;
-            } else {
-                System.out.println("Officer '" + officerNric + "' not found.");
-                return false;
+        // Read OfficerRegistrations.csv to find the matching registration
+        try (BufferedReader br = new BufferedReader(new FileReader(registrationsFilePath.toString()))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                registrations.add(values);
+
+                if (values.length >= 3 && values[0].equalsIgnoreCase(officerNric)) {
+                    registrationFound = true;
+                    projectName = values[1]; // Get the project name from the registration
+                    if (approve) {
+                        values[2] = "APPROVED"; // Update status to APPROVED
+                    } else {
+                        values[2] = "REJECTED"; // Update status to REJECTED
+                    }
+                }
             }
         } catch (IOException e) {
-            System.out.println("Error updating officer registration: " + e.getMessage());
-            return false;
+            System.out.println("Error reading registration file: " + registrationsFilePath.toString() + " - " + e.getMessage());
+        }
+
+
+        // Handle officer registration result
+        if (!officerFound) {
+            System.out.println("Officer '" + officerNric + "' not found in OfficerList.");
+        } else if (!registrationFound) {
+            System.out.println("Registration request for officer '" + officerNric + "' not found.");
+        } else {
+            // Write updated registrations back to the file
+            try (PrintWriter pw = new PrintWriter(registrationsFilePath.toString())) {
+                for (String[] registration : registrations) {
+                    pw.println(String.join(",", registration));
+                }
+                System.out.println("Registration updated successfully.");
+            } catch (IOException e) {
+                System.out.println("Error writing to registration file: " + registrationsFilePath.toString() + " - " + e.getMessage());
+            }
         }
     }
+
+
 
     // Approves an application for a project
     public boolean approveApplication(Application application, BTOProject project) {
@@ -92,4 +122,12 @@ public class ManagerController {
     public List<HDBOfficer> getAllOfficers() {
         return officers; // Returns the entire list of officers for the manager to review
     }
+
+
+    public boolean isProjectValid(String projectName) {
+        // Skip the file reading logic
+        return true;  // Always return true, allowing all projects
+    }
+
+    
 }

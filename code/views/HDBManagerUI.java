@@ -15,14 +15,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Date;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.List;
-import java.util.Scanner;
+import java.io.*;
 
 public class HDBManagerUI {
     private final Scanner scanner;
@@ -438,7 +431,7 @@ public class HDBManagerUI {
         System.out.println("\nManager Dashboard:");
     
         // Display all officer registrations from specified file path
-        String filePath = "code/data/OfficerRegistrations.csv"; 
+        String filePath = "data/OfficerRegistrations.csv"; 
         displayAllOfficerRegistrations(filePath);
         
         System.out.println("1. Manage Officer Registrations");
@@ -461,10 +454,25 @@ public class HDBManagerUI {
         }
     }
 
+    private void ensureFileExists(String filePath) {
+    File file = new File(filePath);
+    if (!file.exists()) {
+        try (PrintWriter writer = new PrintWriter(file)) {
+            writer.println("NRIC,Name,Status"); // Header row
+            writer.println("T1234567A,John Doe,PENDING"); // Sample record
+        } catch (IOException e) {
+            System.out.println("Error creating registration file: " + e.getMessage());
+        }
+    }
+}
+
     private void displayAllOfficerRegistrations(String filePath) {
         System.out.println("\nAll Officer Registrations:");
         System.out.println("-------------------------");
         
+        // Ensure the file exists before attempting to read
+        ensureFileExists(filePath);
+
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             boolean hasRecords = false;
@@ -494,6 +502,7 @@ public class HDBManagerUI {
         
         System.out.println(); // Add empty line for better formatting
     }
+
 
     private void generateReports() {
         // Implementation for generating reports

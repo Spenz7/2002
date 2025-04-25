@@ -75,6 +75,7 @@ public class HDBOfficerUI {
         }
 
         System.out.println("\nAvailable Projects for Registration:");
+        System.out.println("Do NOT select the 1st project, that's just an example which the manager didn't create");
         for (int i = 0; i < availableProjects.size(); i++) {
             System.out.printf("%d. %s (%s)\n", i + 1, availableProjects.get(i).getProjectName(),
                     availableProjects.get(i).getNeighborhood());
