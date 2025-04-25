@@ -172,14 +172,11 @@ public class ApplicantUI {
 
         // Create the application
         Application application = new Application(
-            applicationController.generateApplicationId(),  // Generate unique ID
-            applicant.getNric(),
-            applicant.getName(),
-            selectedProject.getName(),
-            flatType,
-            ApplicationStatus.PENDING,
-            applicant.isSingle(), // Pass whether the applicant is single
-            applicant.getAge()     // Pass the applicant's age
+            applicationController.generateApplicationId(), // Generate unique ID
+            applicant,                                     // Pass the Applicant object
+            selectedProject.getName(),                    // Project name
+            flatType,                                     // Flat type
+            ApplicationStatus.PENDING                     // Initial status
         );
 
         if (applicationController.submitApplication(application)) {

@@ -6,8 +6,7 @@ import models.enums.FlatType;
 public class Application {
     // Attributes
     private int applicationId;        // Unique identifier for the application
-    private String applicantNric;     // NRIC of the applicant who submitted the application
-    private String applicantName;     // Name of the applicant
+    private Applicant applicant;      // Applicant object linked to the application
     private String projectName;       // Name of the BTO project
     private FlatType flatType;        // FlatType (e.g., "2-Room", "3-Room")
     private ApplicationStatus status; // Current status of the application (e.g., "Pending", "Approved")
@@ -15,25 +14,22 @@ public class Application {
     // Constructor
     public Application(
         int applicationId,
-        String applicantNric,
-        String applicantName,
+        Applicant applicant,
         String projectName,
         FlatType flatType,
-        ApplicationStatus status,
-        boolean isSingle,
-        int age
+        ApplicationStatus status
     ) {
         // Eligibility validation
-        if (isSingle && age >= 35 && !flatType.equals(FlatType.TWO_ROOM)) {
+        if (applicant.isSingle() && applicant.getAge() >= 35 && !flatType.equals(FlatType.TWO_ROOM)) {
             throw new IllegalArgumentException("Singles can only apply for 2-room flats.");
         }
-        if (!isSingle && age >= 21 && !flatType.equals(FlatType.TWO_ROOM) && !flatType.equals(FlatType.THREE_ROOM)) {
+        if (!applicant.isSingle() && applicant.getAge() >= 21 &&
+            !flatType.equals(FlatType.TWO_ROOM) && !flatType.equals(FlatType.THREE_ROOM)) {
             throw new IllegalArgumentException("Married applicants can only apply for 2-room or 3-room flats.");
         }
 
         this.applicationId = applicationId;
-        this.applicantNric = applicantNric;
-        this.applicantName = applicantName;
+        this.applicant = applicant;
         this.projectName = projectName;
         this.flatType = flatType; // Use FlatType enum
         this.status = status;
@@ -48,20 +44,12 @@ public class Application {
         this.applicationId = applicationId;
     }
 
-    public String getApplicantNric() {
-        return applicantNric;
+    public Applicant getApplicant() {
+        return applicant;
     }
 
-    public void setApplicantNric(String applicantNric) {
-        this.applicantNric = applicantNric;
-    }
-
-    public String getApplicantName() {
-        return applicantName;
-    }
-
-    public void setApplicantName(String applicantName) {
-        this.applicantName = applicantName;
+    public void setApplicant(Applicant applicant) {
+        this.applicant = applicant;
     }
 
     public String getProjectName() {
@@ -88,6 +76,16 @@ public class Application {
         this.status = status;
     }
 
+    // New Method: Retrieve Applicant's NRIC
+    public String getApplicantNric() {
+        return applicant != null ? applicant.getNric() : "Unknown";
+    }
+
+    // New Method: Retrieve Applicant's Name
+    public String getApplicantName() {
+        return applicant != null ? applicant.getName() : "Unknown";
+    }
+
     // Method: Update Application Status
     public void updateStatus(ApplicationStatus newStatus) {
         this.status = newStatus;
@@ -98,8 +96,7 @@ public class Application {
     public String toString() {
         return "Application{" +
                 "applicationId=" + applicationId +
-                ", applicantNric='" + applicantNric + '\'' +
-                ", applicantName='" + applicantName + '\'' +
+                ", applicant=" + (applicant != null ? applicant.getNric() + " (" + applicant.getName() + ")" : "Unknown") +
                 ", projectName='" + projectName + '\'' +
                 ", flatType=" + flatType +
                 ", status=" + status +

@@ -1,6 +1,6 @@
 ﻿Name,NRIC,Age,Marital Status,Password,Application Status,Flat Type,Project Name
-John,S1234567A,35,Single,password,Pending,, 
+John,S1234567A,35,Single,password,Booked,3-Room,abc
 Sarah,T7654321B,40,Married,password,Successful,2-Room,Project A
 Grace,S9876543C,37,Married,password,Booked,3-Room,Project B
-James,T2345678D,30,Married,password,Pending,,
-Rachel,S3456789E,25,Single,password,Pending,,
+James,T2345678D,30,Married,password,Pending
+Rachel,S3456789E,25,Single,password,Pending

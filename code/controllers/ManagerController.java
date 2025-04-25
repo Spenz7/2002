@@ -6,15 +6,18 @@ import models.HDBOfficer;
 import models.Application;
 import models.BTOProject;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.FileWriter;
+
+
 
 public class ManagerController {
     private List<HDBOfficer> officers; // List of all registered HDB officers
@@ -120,6 +123,43 @@ public class ManagerController {
         }
     }
 
+    private void updateApplicantList(Application application) {
+        String applicantListFilePath = "data/ApplicantList.csv";
+        List<String[]> applicants = new ArrayList<>();
+        boolean applicantFound = false;
+
+        // Step 1: Read ApplicantList.csv
+        try (BufferedReader br = new BufferedReader(new FileReader(applicantListFilePath.toString()))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                applicants.add(values);
+
+                if (values.length >= 6 && values[1].equalsIgnoreCase(application.getApplicant().getNric())) {
+                    applicantFound = true;
+                    values[5] = "Successful"; // Update Application Status column
+                    values[6] = application.getFlatTypeString(); // Update Flat Type column
+                    values[7] = application.getProjectName(); // Update Project Name column
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading applicants file: " + applicantListFilePath.toString() + " - " + e.getMessage());
+        }
+
+        // Step 2: Write updated data back to ApplicantList.csv
+        if (applicantFound) {
+            try (PrintWriter pw = new PrintWriter(applicantListFilePath.toString())) {
+                for (String[] applicant : applicants) {
+                    pw.println(String.join(",", applicant));
+                }
+                System.out.println("ApplicantList.csv updated successfully.");
+            } catch (IOException e) {
+                System.out.println("Error writing to applicants file: " + applicantListFilePath.toString() + " - " + e.getMessage());
+            }
+        } else {
+            System.out.println("Applicant with NRIC '" + application.getApplicant().getNric() + "' not found in ApplicantList.csv.");
+        }
+    }
     // Approves an application for a project
     public boolean approveApplication(Application application, BTOProject project) {
         // Retrieve the flat type as a string and convert to FlatType
@@ -142,8 +182,12 @@ public class ManagerController {
 
         // Update application status
         application.setStatus(ApplicationStatus.SUCCESSFUL); // Ensure SUCCESSFUL exists in ApplicationStatus
+
+        // Update ApplicantList.csv to reflect approval
+        updateApplicantList(application);
+
         return true;
-    }
+        }
 
     // Retrieves a list of all officers
     public List<HDBOfficer> getAllOfficers() {

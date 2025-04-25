@@ -1,4 +1,5 @@
 package models;
+
 import models.enums.MaritalStatus;
 import java.util.regex.Pattern;
 
@@ -9,6 +10,9 @@ public class Applicant {
     private int age;
     private String maritalStatus;
     private String password;
+    private String applicationStatus; // New: Tracks application status (e.g., Pending, Approved, Rejected)
+    private String flatType;          // New: Tracks the type of flat applied for
+    private String projectName;       // New: Tracks the project name applied for
 
     // Constructor
     public Applicant(String name, String nric, int age, String maritalStatus, String password) {
@@ -17,6 +21,9 @@ public class Applicant {
         this.age = age;
         this.maritalStatus = maritalStatus;
         this.password = password;
+        this.applicationStatus = "Pending"; // Default status
+        this.flatType = "";                 // Default empty flat type
+        this.projectName = "";              // Default empty project name
     }
 
     // Getters and Setters
@@ -65,6 +72,30 @@ public class Applicant {
         this.password = password;
     }
 
+    public String getApplicationStatus() {
+        return applicationStatus;
+    }
+
+    public void setApplicationStatus(String applicationStatus) {
+        this.applicationStatus = applicationStatus;
+    }
+
+    public String getFlatType() {
+        return flatType;
+    }
+
+    public void setFlatType(String flatType) {
+        this.flatType = flatType;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
     // Method: Validate NRIC Format
     public boolean isValidNric() {
         // Simple regex for NRIC validation
@@ -87,6 +118,11 @@ public class Applicant {
         return maritalStatus.equalsIgnoreCase("Single") && age >= 35;
     }
 
+    // New Method: Check if Application is Approved
+    public boolean isApplicationApproved() {
+        return "Approved".equalsIgnoreCase(this.applicationStatus);
+    }
+
     // Override toString for Displaying Applicant Information
     @Override
     public String toString() {
@@ -95,6 +131,9 @@ public class Applicant {
                 ", nric='" + nric + '\'' +
                 ", age=" + age +
                 ", maritalStatus='" + maritalStatus + '\'' +
+                ", applicationStatus='" + applicationStatus + '\'' +
+                ", flatType='" + flatType + '\'' +
+                ", projectName='" + projectName + '\'' +
                 '}';
     }
 }
