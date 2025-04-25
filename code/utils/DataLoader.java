@@ -134,7 +134,7 @@ public class DataLoader {
 
     // Update applicant's booking
     public static boolean updateApplicantBooking(String applicantNric, String flatType, String projectName) {
-        String filePath = "data/Applicants.csv"; // Adjust file path as needed
+        String filePath = "data/ApplicantList.csv"; // Adjust file path as needed
         List<String> lines = new ArrayList<>();
         boolean updated = false;
 
@@ -174,7 +174,7 @@ public class DataLoader {
 
 
     public static String getApplicantName(String applicantNric) {
-        String filePath = "data/Applicants.csv";
+        String filePath = "data/ApplicantList.csv";
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -206,7 +206,7 @@ public class DataLoader {
     }
 
     public static String getApplicantApplicationStatus(String applicantNric) {
-        String filePath = "data/Applicants.csv";
+        String filePath = "data/ApplicantList.csv";
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -224,7 +224,7 @@ public class DataLoader {
 
     // Retrieve applicant's booked flat type
     public static String getApplicantBookedFlatType(String applicantNric) {
-        String filePath = "data/Applicants.csv"; // Adjust file path as needed
+        String filePath = "data/ApplicantList.csv"; // Adjust file path as needed
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -359,7 +359,7 @@ public class DataLoader {
 
 
     public static String getApplicantMaritalStatus(String applicantNric) {
-        String filePath = "data/Applicants.csv"; // Adjust file path as needed
+        String filePath = "data/ApplicantList.csv"; // Adjust file path as needed
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
