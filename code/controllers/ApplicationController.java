@@ -9,11 +9,19 @@ import java.util.stream.Collectors;
 
 public class ApplicationController {
     private List<Application> applications; // List to hold all application records
-
+    // Used to generate a unique ID for each application
+    private static int idCounter = 1;
     public ApplicationController() {
         applications = new ArrayList<>();
     }
 
+
+
+    // Full function body for generateApplicationId():
+    public int generateApplicationId() {
+        return idCounter++;
+    }
+    
     // Adds a new application to the list
     public boolean createApplication(Application application) {
         applications.add(application);
@@ -88,6 +96,22 @@ public class ApplicationController {
         return applications.stream()
             .filter(app -> app.getStatus() == status)
             .collect(Collectors.toList());
+    }
+
+    public List<Application> getApplications() {
+        return applications;
+    }
+
+    public boolean submitApplication(Application application) {
+        // Make sure an applicant does not already have a pending application.
+        for (Application app : applications) {
+            if (app.getApplicantNric().equals(application.getApplicantNric()) &&
+                app.getStatus() == ApplicationStatus.PENDING) {
+                return false;  // Already an active application
+            }
+        }
+        applications.add(application);
+        return true;
     }
 
     //getapplication by project and status?

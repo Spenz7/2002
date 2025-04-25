@@ -1,10 +1,10 @@
 package views;
-import models.*;
 
 import controllers.ApplicationController;
 import controllers.ManagerController;
 import controllers.ProjectController;
 import models.HDBManager;
+import models.enums.FlatType;
 import models.enums.ApplicationStatus;
 import models.Application;
 import models.BTOProject;
@@ -44,12 +44,15 @@ public class HDBManagerUI {
 
     private Date parseDate(String dateStr) {
         try {
-            return new SimpleDateFormat("yyyy-MM-dd").parse(dateStr);
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+            sdf.setLenient(false);  // Ensures strict date parsing
+            return sdf.parse(dateStr);
         } catch (ParseException e) {
             System.out.println("Invalid date format. Using current date.");
             return new Date();
         }
     }
+
 
     public void showMenu() {
         boolean shouldContinue = true;

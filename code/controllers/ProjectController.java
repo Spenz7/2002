@@ -16,6 +16,18 @@ public class ProjectController {
         projects = new ArrayList<>();
     }
 
+    public List<BTOProject> getProjectsForApplicant(String applicantNric, boolean isSingle, int age) {
+        List<BTOProject> eligibleProjects = new ArrayList<>();
+        // Loop through all projects and add those that are visible.
+        // You can also add additional filtering based on eligibility (if needed).
+        for (BTOProject project : projects) {
+            if (project.isVisible()) {
+                eligibleProjects.add(project);
+            }
+        }
+        return eligibleProjects;
+    }
+    
     // Adds a new BTO project to the list
     public void createProject(BTOProject project) {
         projects.add(project);

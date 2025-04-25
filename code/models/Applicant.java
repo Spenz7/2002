@@ -52,6 +52,11 @@ public class Applicant {
         this.maritalStatus = maritalStatus;
     }
 
+    public boolean isSingle() {
+        // Assumes that maritalStatus is stored as "Single" or "Married"
+        return "single".equalsIgnoreCase(this.maritalStatus);
+    }
+
     public String getPassword() {
         return password;
     }
