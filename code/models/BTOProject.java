@@ -207,17 +207,25 @@ public class BTOProject {
             this.type1 = "Unknown"; // Default or error case
         }
     }
+
     public boolean approveApplication(FlatType flatType) {
-        // Check if there are available units for the flat type
+        System.out.println("Available flats for " + flatType + ": " + getAvailableFlats(flatType)); // Debug line
+
         if (flatType.equals(FlatType.TWO_ROOM) && unitsType1 > 0) {
-            unitsType1--; // Decrease the available units for type 1
+            unitsType1--; // Decrease available units for type 1
+            System.out.println("Approved! Remaining units for 2-Room: " + unitsType1);
             return true;
         } else if (flatType.equals(FlatType.THREE_ROOM) && unitsType2 > 0) {
-            unitsType2--; // Decrease the available units for type 2
+            unitsType2--; // Decrease available units for type 2
+            System.out.println("Approved! Remaining units for 3-Room: " + unitsType2);
             return true;
         }
-        return false; // If no available units for the selected flat type
+
+        System.out.println("No available flats for " + flatType);  // Debug line
+        return false;
     }
+
+
     
     public boolean rejectApplication(FlatType flatType) {
         // Logic to handle rejection of application (if needed)
@@ -229,6 +237,7 @@ public class BTOProject {
     public boolean processApplication(Application application) {
         // Determine the flat type of the application
         FlatType flatType = application.getFlatType();
+        System.out.println("Processing application for flat type: " + flatType);
 
         // Process the application for approval or rejection
         if (approveApplication(flatType)) {
@@ -239,5 +248,6 @@ public class BTOProject {
             return false;
         }
     }
+
 
 }
