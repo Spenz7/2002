@@ -67,6 +67,7 @@ public class ManagerController {
     public boolean approveApplication(Application application, BTOProject project) {
         // Retrieve the flat type as a string and convert to FlatType
         String flatTypeString = application.getFlatTypeString(); // Ensure this method returns a string representation
+        System.out.println("Flat type requested: " + flatTypeString);
         FlatType flatType = FlatType.fromString(flatTypeString);
 
         // Check flat availability

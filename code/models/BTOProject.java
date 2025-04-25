@@ -151,14 +151,33 @@ public class BTOProject {
     }
 
     public int getAvailableFlats(FlatType flatType) {
+    // Check for null flatType to prevent runtime errors
+        if (flatType == null) {
+            System.err.println("Error: flatType is null.");
+            return 0;
+        }
+
+        // Retrieve the display name for the flat type
         String flatTypeStr = flatType.getDisplayName();
-        if (type1.equalsIgnoreCase(flatTypeStr)) {
+
+        // Debug output for tracing the flat type being checked
+        System.out.println("Checking availability for flat type: " + flatTypeStr);
+
+        // Compare with project flat types and return availability
+        if (type1 != null && type1.equalsIgnoreCase(flatTypeStr)) {
+            System.out.println("Available units for " + flatTypeStr + ": " + unitsType1);
             return unitsType1;
-        } else if (type2.equalsIgnoreCase(flatTypeStr)) {
+        } else if (type2 != null && type2.equalsIgnoreCase(flatTypeStr)) {
+            System.out.println("Available units for " + flatTypeStr + ": " + unitsType2);
             return unitsType2;
         }
+
+        // Debug output if no match is found
+        System.err.println("Flat type \"" + flatTypeStr + "\" does not match type1 or type2.");
         return 0;
     }
+
+
 
     public boolean overlaps(BTOProject otherProject) {
         return !(this.closingDate.before(otherProject.openingDate) || 
