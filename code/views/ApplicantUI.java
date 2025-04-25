@@ -8,6 +8,9 @@ import models.Application;
 import models.Enquiry;
 import models.BTOProject;
 import models.enums.ApplicationStatus;
+import models.enums.FlatType;
+
+
 
 import java.util.List;
 import java.util.Scanner;
@@ -157,7 +160,7 @@ public class ApplicantUI {
             applicant.getNric(),
             applicant.getName(), // Added applicant name here
             selectedProject.getName(),
-            selectedProject.getFlatType(),  // Add flatType here
+            FlatType.values()[selectedProject.getFlatType()],  // Add flatType here
             ApplicationStatus.PENDING
         );
 
