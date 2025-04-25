@@ -190,7 +190,7 @@ public class DataLoader {
     }
 
     public static int getApplicantAge(String applicantNric) {
-        String filePath = "data/Applicants.csv";
+        String filePath = "data/ApplicantList.csv";
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
