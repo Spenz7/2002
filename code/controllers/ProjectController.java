@@ -12,26 +12,22 @@ import java.util.stream.Collectors;
 public class ProjectController {
     private List<BTOProject> projects; // Holds all BTO project records
 
-    public ProjectController() {
-        projects = new ArrayList<>();
+    // Constructor: Initialize projects
+    public ProjectController(List<BTOProject> projects) {
+        this.projects = projects; // Assign provided projects to the field
     }
 
+    // Retrieve projects for a specific applicant based on visibility and eligibility
     public List<BTOProject> getProjectsForApplicant(String applicantNric, boolean isSingle, int age) {
-        List<BTOProject> eligibleProjects = new ArrayList<>();
-        // Loop through all projects and add those that are visible.
-        // You can also add additional filtering based on eligibility (if needed).
-        for (BTOProject project : projects) {
-            if (project.isVisible()) {
-                eligibleProjects.add(project);
-            }
-        }
-        return eligibleProjects;
+        return projects.stream()
+                .filter(BTOProject::isVisible) // Filter visible projects
+                .collect(Collectors.toList()); // Add other filters for eligibility, if needed
     }
-    
+
     // Adds a new BTO project to the list
     public void createProject(BTOProject project) {
         projects.add(project);
-        System.out.println("Project added: " + project.getProjectName()); // Fixed to match getProjectName method
+        System.out.println("Project added: " + project.getProjectName());
     }
 
     // Toggles the visibility of a project
@@ -59,7 +55,7 @@ public class ProjectController {
     // Retrieve visible projects for applicants based on eligibility
     public List<BTOProject> getVisibleProjects(Applicant applicant) {
         return projects.stream()
-                .filter(project -> project.isVisible() // Visibility is toggled "on"
+                .filter(project -> project.isVisible() // Check visibility
                         && isEligibleForFlatType(applicant, project)) // Check applicant eligibility
                 .collect(Collectors.toList());
     }
@@ -86,15 +82,25 @@ public class ProjectController {
         return projects.removeIf(project -> project.getProjectName().equalsIgnoreCase(projectName));
     }
 
+    // Update flat availability in the project
     public boolean updateFlatAvailability(BTOProject project, String flatType, int newCount) {
-        // Update the flat availability in the project
         if (project.getFlatAvailability().containsKey(flatType)) {
             project.getFlatAvailability().put(flatType, newCount);
-            return true; // Indicate success
+            System.out.println("Flat availability updated: " + flatType + " now has " + newCount + " unit(s).");
+            return true;
         } else {
             System.out.println("Invalid flat type: " + flatType);
-            return false; // Indicate failure
+            return false;
         }
     }
 
+    // Retrieve a project by its name
+    public BTOProject getProjectByName(String projectName) {
+        for (BTOProject project : projects) { // Use the `projects` list to find the project
+            if (project.getProjectName().equalsIgnoreCase(projectName)) {
+                return project;
+            }
+        }
+        return null; // Return null if no matching project is found
+    }
 }

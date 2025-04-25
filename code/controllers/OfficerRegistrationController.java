@@ -77,9 +77,7 @@ public class OfficerRegistrationController {
             System.out.println("Registration request submitted for officer '" + officer.getName() + 
                             "' to project: " + project.getProjectName());
 
-            // Here, you could update the officer's registration status to "APPROVED" once needed
-            // Call updateRegistrationStatus when you're ready to approve:
-            updateRegistrationStatus(officer.getNric(), RegistrationStatus.APPROVED, project);
+            
 
             return true;
 

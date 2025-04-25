@@ -10,9 +10,7 @@ import controllers.*;
 import views.ConsoleUI;
 
 import java.util.List;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
@@ -24,22 +22,23 @@ public class Main {
         List<HDBOfficer> officers = dataLoader.loadOfficers("data/OfficerList.csv");
         List<HDBManager> managers = dataLoader.loadManagers("data/ManagerList.csv");
         List<BTOProject> projects = dataLoader.loadProjects("data/ProjectList.csv");
-       
+
         // Initialize the Controllers
         AuthController authController = new AuthController(applicants, officers, managers);
         ApplicationController applicationController = new ApplicationController();
         EnquiryController enquiryController = new EnquiryController();
-        ProjectController projectController = new ProjectController();
+        ProjectController projectController = new ProjectController(projects); // Pass projects here
         
         // Create the ManagerController with both officers and projects
         ManagerController managerController = new ManagerController(officers, projects);
-        
+
         OfficerRegistrationController officerRegistrationController = new OfficerRegistrationController(officers);
         FilterController filterController = new FilterController();
         BookingController bookingController = new BookingController();
 
-        // Populate the ProjectController with loaded projects
-        for (BTOProject project : projects) {
+        // Use a copy of the projects list to avoid modifying the original while iterating
+        List<BTOProject> projectListCopy = new ArrayList<>(projects);
+        for (BTOProject project : projectListCopy) {
             projectController.createProject(project);
         }
 

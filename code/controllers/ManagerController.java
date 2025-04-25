@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.FileWriter;
+import java.util.Arrays;
 
 
 
@@ -129,37 +130,45 @@ public class ManagerController {
         boolean applicantFound = false;
 
         // Step 1: Read ApplicantList.csv
-        try (BufferedReader br = new BufferedReader(new FileReader(applicantListFilePath.toString()))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(applicantListFilePath))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
+
+                // Ensure each row has at least 8 columns (extend if necessary)
+                if (values.length < 8) {
+                    values = Arrays.copyOf(values, 8); // Extend to 8 columns, defaulting to empty strings
+                }
+
                 applicants.add(values);
 
-                if (values.length >= 6 && values[1].equalsIgnoreCase(application.getApplicant().getNric())) {
+                // Check for matching NRIC and update values
+                if (values.length >= 8 && values[1].equalsIgnoreCase(application.getApplicant().getNric())) {
                     applicantFound = true;
                     values[5] = "Successful"; // Update Application Status column
                     values[6] = application.getFlatTypeString(); // Update Flat Type column
-                    values[7] = application.getProjectName(); // Update Project Name column
+                    values[7] = application.getProjectName();    // Update Project Name column
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error reading applicants file: " + applicantListFilePath.toString() + " - " + e.getMessage());
+            System.err.println("Error reading applicants file: " + e.getMessage());
         }
 
         // Step 2: Write updated data back to ApplicantList.csv
         if (applicantFound) {
-            try (PrintWriter pw = new PrintWriter(applicantListFilePath.toString())) {
+            try (PrintWriter pw = new PrintWriter(new FileWriter(applicantListFilePath))) {
                 for (String[] applicant : applicants) {
                     pw.println(String.join(",", applicant));
                 }
                 System.out.println("ApplicantList.csv updated successfully.");
             } catch (IOException e) {
-                System.out.println("Error writing to applicants file: " + applicantListFilePath.toString() + " - " + e.getMessage());
+                System.err.println("Error writing to applicants file: " + e.getMessage());
             }
         } else {
             System.out.println("Applicant with NRIC '" + application.getApplicant().getNric() + "' not found in ApplicantList.csv.");
         }
     }
+
     // Approves an application for a project
     public boolean approveApplication(Application application, BTOProject project) {
         // Retrieve the flat type as a string and convert to FlatType

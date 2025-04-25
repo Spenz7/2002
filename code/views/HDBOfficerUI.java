@@ -6,6 +6,7 @@ import controllers.ProjectController;
 import models.BTOProject;
 import models.Enquiry;
 import models.HDBOfficer;
+import models.enums.RegistrationStatus;
 
 import java.util.List;
 import java.util.Scanner;
@@ -34,6 +35,9 @@ public class HDBOfficerUI {
         boolean shouldContinue = true;
 
         while (shouldContinue) {
+            // Refresh the officer's data before displaying the menu
+            refreshOfficerData();
+
             System.out.println("\n=== HDB Officer Dashboard (NRIC: " + officer.getNric() + ") ===");
             System.out.println("1. Register for a Project");
             System.out.println("2. View Registration Status");
@@ -64,6 +68,25 @@ public class HDBOfficerUI {
                 }
                 default -> System.out.println("Invalid option. Please try again.");
             }
+        }
+    }
+
+    private void refreshOfficerData() {
+        try {
+            // Update the officer's registration status
+            String status = DataLoader.getOfficerRegistrationStatus(officer.getNric());
+            if (!status.equalsIgnoreCase("No registration found.")) {
+                officer.setRegistrationStatus(RegistrationStatus.valueOf(status.toUpperCase()));
+            }
+
+            // Update the officer's assigned project
+            String projectName = DataLoader.getAssignedProjectName(officer.getNric());
+            if (projectName != null) {
+                BTOProject assignedProject = projectController.getProjectByName(projectName);
+                officer.setAssignedProject(assignedProject);
+            }
+        } catch (Exception e) {
+            System.err.println("Error refreshing officer data: " + e.getMessage());
         }
     }
 
@@ -138,6 +161,8 @@ public class HDBOfficerUI {
     }
 
     private void viewAssignedProjectDetails() {
+        refreshOfficerData(); // Ensure officer's data is up-to-date
+
         BTOProject assignedProject = officer.getAssignedProject();
 
         if (assignedProject == null) {
@@ -184,7 +209,6 @@ public class HDBOfficerUI {
         }
     }
 
-
     private void generateReceipt() {
         System.out.print("Enter Applicant's NRIC for receipt generation: ");
         String applicantNric = scanner.nextLine().trim();
@@ -196,9 +220,6 @@ public class HDBOfficerUI {
             System.out.println(receipt); // Display error message if receipt generation fails
         }
     }
-
-
-
 
     private void changePassword(Scanner scanner) {
         System.out.print("Enter your new password: ");

@@ -294,6 +294,8 @@ public class DataLoader {
         }
     }
 
+
+
     public static String getOfficerRegistrationStatus(String officerNric) throws IOException {
         String filePath = "data/OfficerRegistrations.csv";
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -373,5 +375,20 @@ public class DataLoader {
         }
         return null; // Return null if not found
     }
+
+    public static String getAssignedProjectName(String officerNric) throws IOException {
+        String filePath = "data/OfficerRegistrations.csv";
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data[0].equals(officerNric)) {
+                    return data[1]; // Project name is in the second column
+                }
+            }
+        }
+        return null; // Return null if no assigned project is found
+    }
+
 
 }
