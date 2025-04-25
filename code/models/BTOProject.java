@@ -1,6 +1,7 @@
 package models;
 
 import models.enums.FlatType;
+import models.enums.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -206,4 +207,37 @@ public class BTOProject {
             this.type1 = "Unknown"; // Default or error case
         }
     }
+    public boolean approveApplication(FlatType flatType) {
+        // Check if there are available units for the flat type
+        if (flatType.equals(FlatType.TWO_ROOM) && unitsType1 > 0) {
+            unitsType1--; // Decrease the available units for type 1
+            return true;
+        } else if (flatType.equals(FlatType.THREE_ROOM) && unitsType2 > 0) {
+            unitsType2--; // Decrease the available units for type 2
+            return true;
+        }
+        return false; // If no available units for the selected flat type
+    }
+    
+    public boolean rejectApplication(FlatType flatType) {
+        // Logic to handle rejection of application (if needed)
+        return true; // Placeholder for rejection logic
+    }
+
+    // Inside BTOProject.java
+
+    public boolean processApplication(Application application) {
+        // Determine the flat type of the application
+        FlatType flatType = application.getFlatType();
+
+        // Process the application for approval or rejection
+        if (approveApplication(flatType)) {
+            application.updateStatus(ApplicationStatus.APPROVED);  // Approve the application
+            return true;
+        } else {
+            application.updateStatus(ApplicationStatus.REJECTED);  // Reject the application
+            return false;
+        }
+    }
+
 }
