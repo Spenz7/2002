@@ -1,6 +1,28 @@
 Demo Link:
 https://youtu.be/wE76sMKUr_w
 
+Main Use-Case Flow from demo:
+1) Manager create listing
+2) Applicant - 
+   - sign in as user who gets 2-room
+   - View listing
+   - Apply for a Project 
+   - View My Application Status  
+3) Officer
+   - Register for a Project  
+   - View Registration Status  
+4) Manager 
+   - Approve Officer Registrations  
+   - Approve Applicant’s Applications 
+5) Officer
+   - View Registration Status
+   - View Assigned Project Details  
+   - Process Flat Booking  
+   - Update Flat Availability  
+   - Modify user to 3-room
+   - Generate receipts
+   - Change password eg for Officer
+
 
 Class diagram:
 https://www.mermaidchart.com/app/projects/fd8e78eb-3da9-40ab-a76d-e27301662056/diagrams/edbe31ba-6749-4f5f-a6d7-b5d2a8764cef/version/v0.1/edit
