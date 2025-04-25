@@ -12,33 +12,53 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-
 public class ManagerController {
     private List<HDBOfficer> officers; // List of all registered HDB officers
+    private List<BTOProject> availableProjects; // List of all available BTO projects
 
-    public ManagerController(List<HDBOfficer> officers) {
+    public ManagerController(List<HDBOfficer> officers, List<BTOProject> availableProjects) {
         this.officers = officers;
+        this.availableProjects = availableProjects; // Initialize availableProjects
+    }
+
+    // Method to retrieve the project by name
+    private BTOProject getProjectByName(String projectName) {
+        // Use availableProjects to find the project
+        for (BTOProject project : availableProjects) {
+            if (project.getProjectName().equalsIgnoreCase(projectName)) {
+                return project;
+            }
+        }
+        return null; // Return null if no matching project is found
+    }
+
+    // Method to retrieve the officer by NRIC
+    private HDBOfficer getOfficerByNric(String officerNric) {
+        // Use officers list to find the officer
+        for (HDBOfficer officer : officers) {
+            if (officer.getNric().equalsIgnoreCase(officerNric)) {
+                return officer;
+            }
+        }
+        return null; // Return null if no matching officer is found
     }
 
     // Approves or denies officer registrations based on eligibility criteria
     public void handleOfficerRegistration(String officerNric, boolean approve) {
-        
+
         String registrationsFilePath = "data/OfficerRegistrations.csv";
         String officersFilePath = "data/OfficerList.csv";
-
-
+        List<String[]> registrations = new ArrayList<>();
         boolean officerFound = false;
         boolean registrationFound = false;
         String projectName = "";
-        List<String[]> registrations = new ArrayList<>();
 
         // Read OfficerList.csv to confirm if the officer exists
-        try (BufferedReader br = new BufferedReader(new FileReader(officersFilePath.toString()))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(officersFilePath))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
@@ -48,11 +68,11 @@ public class ManagerController {
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error reading officer list file: " + officersFilePath.toString() + " - " + e.getMessage());
+            System.out.println("Error reading officer list file: " + officersFilePath + " - " + e.getMessage());
         }
 
         // Read OfficerRegistrations.csv to find the matching registration
-        try (BufferedReader br = new BufferedReader(new FileReader(registrationsFilePath.toString()))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(registrationsFilePath))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
@@ -69,9 +89,8 @@ public class ManagerController {
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error reading registration file: " + registrationsFilePath.toString() + " - " + e.getMessage());
+            System.out.println("Error reading registration file: " + registrationsFilePath + " - " + e.getMessage());
         }
-
 
         // Handle officer registration result
         if (!officerFound) {
@@ -79,19 +98,27 @@ public class ManagerController {
         } else if (!registrationFound) {
             System.out.println("Registration request for officer '" + officerNric + "' not found.");
         } else {
+            // Retrieve the project object corresponding to the projectName
+            BTOProject approvedProject = getProjectByName(projectName);
+
+            if (approvedProject != null) {
+                // Assign the project to the officer
+                HDBOfficer officer = getOfficerByNric(officerNric); // You need a method to get the officer object by NRIC
+                officer.setAssignedProject(approvedProject); // Assign the project to the officer
+                System.out.println("Project '" + approvedProject.getProjectName() + "' assigned to officer '" + officerNric + "'");
+            }
+
             // Write updated registrations back to the file
-            try (PrintWriter pw = new PrintWriter(registrationsFilePath.toString())) {
+            try (PrintWriter pw = new PrintWriter(new FileWriter(registrationsFilePath))) {
                 for (String[] registration : registrations) {
                     pw.println(String.join(",", registration));
                 }
                 System.out.println("Registration updated successfully.");
             } catch (IOException e) {
-                System.out.println("Error writing to registration file: " + registrationsFilePath.toString() + " - " + e.getMessage());
+                System.out.println("Error writing to registration file: " + registrationsFilePath + " - " + e.getMessage());
             }
         }
     }
-
-
 
     // Approves an application for a project
     public boolean approveApplication(Application application, BTOProject project) {
@@ -123,11 +150,8 @@ public class ManagerController {
         return officers; // Returns the entire list of officers for the manager to review
     }
 
-
     public boolean isProjectValid(String projectName) {
         // Skip the file reading logic
         return true;  // Always return true, allowing all projects
     }
-
-    
 }

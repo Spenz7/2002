@@ -30,7 +30,10 @@ public class Main {
         ApplicationController applicationController = new ApplicationController();
         EnquiryController enquiryController = new EnquiryController();
         ProjectController projectController = new ProjectController();
-        ManagerController managerController = new ManagerController(officers);
+        
+        // Create the ManagerController with both officers and projects
+        ManagerController managerController = new ManagerController(officers, projects);
+        
         OfficerRegistrationController officerRegistrationController = new OfficerRegistrationController(officers);
         FilterController filterController = new FilterController();
         BookingController bookingController = new BookingController();

@@ -16,11 +16,17 @@ public class OfficerRegistrationController {
     }
 
     // Updates an officer's registration status
-    public boolean updateRegistrationStatus(String officerNric, RegistrationStatus newStatus) {
+    public boolean updateRegistrationStatus(String officerNric, RegistrationStatus newStatus, BTOProject project) {
         for (HDBOfficer officer : officers) {
             if (officer.getNric().equalsIgnoreCase(officerNric)) {
                 // Update registration status in memory
                 officer.setRegistrationStatus(newStatus);
+
+                if (newStatus == RegistrationStatus.APPROVED) {
+                    // Assign the project to the officer if registration is approved
+                    officer.setAssignedProject(project);
+                    System.out.println("Officer '" + officer.getName() + "' assigned to project: " + project.getProjectName());
+                }
 
                 // Log status update
                 System.out.println("Registration status updated for officer '" + officer.getName() + "' to: " + newStatus);
@@ -39,6 +45,7 @@ public class OfficerRegistrationController {
         System.out.println("Officer '" + officerNric + "' not found.");
         return false;
     }
+
 
     // Checks if the officer is eligible to register for the selected project
     public boolean checkEligibility(HDBOfficer officer, BTOProject project) {
@@ -68,7 +75,12 @@ public class OfficerRegistrationController {
             officer.setRegistrationStatus(RegistrationStatus.PENDING);
 
             System.out.println("Registration request submitted for officer '" + officer.getName() + 
-                               "' to project: " + project.getProjectName());
+                            "' to project: " + project.getProjectName());
+
+            // Here, you could update the officer's registration status to "APPROVED" once needed
+            // Call updateRegistrationStatus when you're ready to approve:
+            updateRegistrationStatus(officer.getNric(), RegistrationStatus.APPROVED, project);
+
             return true;
 
         } catch (IOException e) {
@@ -76,6 +88,7 @@ public class OfficerRegistrationController {
             return false;
         }
     }
+
 
     // Retrieves the current registration status of the officer
     public String getRegistrationStatus(HDBOfficer officer) {
