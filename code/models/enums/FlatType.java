@@ -17,7 +17,7 @@ public enum FlatType {
         return displayName;
     }
     
-    // Make sure this method is inside the enum body!
+    // Method to get FlatType from string (case-insensitive)
     public static FlatType fromString(String flatType) {
         for (FlatType type : FlatType.values()) {
             if (type.getDisplayName().equalsIgnoreCase(flatType)) {
@@ -27,5 +27,3 @@ public enum FlatType {
         throw new IllegalArgumentException("Invalid flat type: " + flatType);
     }
 }
-
-//either 2 room or 3 room flat

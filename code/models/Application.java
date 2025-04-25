@@ -1,22 +1,24 @@
 package models;
 
 import models.enums.ApplicationStatus;
-//import java.util.Date;
+import models.enums.FlatType;
 
 public class Application {
     // Attributes
     private int applicationId;        // Unique identifier for the application
     private String applicantNric;     // NRIC of the applicant who submitted the application
-    private String projectName;   
-    private int flatType; // "2-Room" or "3-Room"
-    //private Date applicationDate;    // Date of the BTO project being applied for
+    private String applicantName;     // Name of the applicant
+    private String projectName;       // Name of the BTO project
+    private FlatType flatType;        // FlatType (e.g., "2-Room", "3-Room")
     private ApplicationStatus status; // Current status of the application (e.g., "Pending", "Approved")
 
     // Constructor
-    public Application(int applicationId, String applicantNric, String projectName, ApplicationStatus status) {
+    public Application(int applicationId, String applicantNric, String applicantName, String projectName, FlatType flatType, ApplicationStatus status) {
         this.applicationId = applicationId;
         this.applicantNric = applicantNric;
+        this.applicantName = applicantName; 
         this.projectName = projectName;
+        this.flatType = flatType; // Use FlatType enum
         this.status = status;
     }
 
@@ -37,17 +39,28 @@ public class Application {
         this.applicantNric = applicantNric;
     }
 
+    public String getApplicantName() {
+        return applicantName;
+    }
+
+    public void setApplicantName(String applicantName) {
+        this.applicantName = applicantName;
+    }
+
     public String getProjectName() {
         return projectName;
     }
 
-    public int getFlatType() {
-        return flatType;
-    }
-    
-
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public FlatType getFlatType() {
+        return flatType;
+    }
+
+    public void setFlatType(FlatType flatType) {
+        this.flatType = flatType;
     }
 
     public ApplicationStatus getStatus() {
@@ -69,8 +82,15 @@ public class Application {
         return "Application{" +
                 "applicationId=" + applicationId +
                 ", applicantNric='" + applicantNric + '\'' +
+                ", applicantName='" + applicantName + '\'' +
                 ", projectName='" + projectName + '\'' +
+                ", flatType=" + flatType +
                 ", status=" + status +
                 '}';
+    }
+
+    // Add a method for getting the string representation of FlatType
+    public String getFlatTypeString() {
+        return flatType != null ? flatType.getDisplayName() : "Unknown";
     }
 }
