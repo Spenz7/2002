@@ -123,54 +123,68 @@ public class ApplicantUI {
     }
 
     private void applyForProject() {
-        // Show available projects
-        List<BTOProject> projects = projectController.getVisibleProjects(applicant);
-        viewAvailableProjects();
+        System.out.println("\n=== Apply for a Project ===");
 
-        System.out.print("\nEnter project number to apply (0 to cancel): ");
-        int projectChoice = scanner.nextInt();
-        scanner.nextLine();
-
-        if (projectChoice == 0) {
-            return;
-        }
-
-        if (projectChoice < 1 || projectChoice > projects.size()) {
-            System.out.println("Invalid project selection.");
-            return;
-        }
-
-        BTOProject selectedProject = projects.get(projectChoice - 1);
-
-        // Check eligibility
-        if (!isEligibleForProject(selectedProject)) {
-            System.out.println("You are not eligible for this project.");
-            return;
-        }
-
-        // Check if already applied
-        if (applicationController.hasExistingApplication(applicant.getNric())) {
-            System.out.println("You already have an active application.");
-            return;
-        }
-
-        // Create application with applicantName and flatType
-        Application application = new Application(
-            0, // Auto-generated ID
-            applicant.getNric(),
-            applicant.getName(), // Added applicant name here
-            selectedProject.getName(),
-            //FlatType.values()[selectedProject.getFlatType()],
-            selectedProject.getFlatType(),
-            ApplicationStatus.PENDING
+        // Display available projects for the applicant's group
+        List<BTOProject> availableProjects = projectController.getProjectsForApplicant(
+            applicant.getNric(), applicant.isSingle(), applicant.getAge()
         );
 
-        if (applicationController.createApplication(application)) {
+        if (availableProjects.isEmpty()) {
+            System.out.println("No projects available for your eligibility criteria.");
+            return;
+        }
+
+        System.out.println("\nAvailable Projects:");
+        for (int i = 0; i < availableProjects.size(); i++) {
+            BTOProject project = availableProjects.get(i);
+            System.out.printf("%d. %s (Neighborhood: %s, Types: %s/%s)\n",
+                i + 1, project.getName(), project.getNeighborhood(),
+                project.getType1(), project.getType2());
+        }
+
+        System.out.print("\nSelect a project to apply for (0 to cancel): ");
+        int projectChoice = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline
+
+        if (projectChoice == 0) return;
+        if (projectChoice < 1 || projectChoice > availableProjects.size()) {
+            System.out.println("Invalid choice. Returning to dashboard.");
+            return;
+        }
+
+        BTOProject selectedProject = availableProjects.get(projectChoice - 1);
+
+        System.out.print("\nChoose flat type (2-room/3-room): ");
+        String flatTypeInput = scanner.nextLine().trim();
+        FlatType flatType;
+
+        try {
+            flatType = FlatType.fromString(flatTypeInput);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid flat type. Returning to dashboard.");
+            return;
+        }
+
+        // Create the application
+        Application application = new Application(
+            applicationController.generateApplicationId(),  // Generate unique ID
+            applicant.getNric(),
+            applicant.getName(),
+            selectedProject.getName(),
+            flatType,
+            ApplicationStatus.PENDING,
+            applicant.isSingle(), // Pass whether the applicant is single
+            applicant.getAge()     // Pass the applicant's age
+        );
+
+        if (applicationController.submitApplication(application)) {
             System.out.println("Application submitted successfully!");
         } else {
-            System.out.println("Failed to submit application.");
+            System.out.println("Failed to submit application. You may already have an active application.");
         }
     }
+
 
 
 

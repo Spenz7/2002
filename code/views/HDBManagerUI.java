@@ -1,4 +1,5 @@
 package views;
+import models.*;
 
 import controllers.ApplicationController;
 import controllers.ManagerController;
@@ -92,45 +93,55 @@ public class HDBManagerUI {
     }
     private void createNewProject() {
         System.out.println("\n=== Create New BTO Project ===");
-        
+
+        // Gather project details from the manager
         System.out.print("Project Name: ");
         String name = scanner.nextLine();
-        
+
         System.out.print("Neighborhood: ");
         String neighborhood = scanner.nextLine();
-        
+
         System.out.print("Flat Type 1 (e.g., 2-Room): ");
         String type1 = scanner.nextLine();
-        
+        if (!type1.equalsIgnoreCase("2-room") && !type1.equalsIgnoreCase("3-room")) {
+            System.out.println("Invalid Flat Type 1. Only 2-room and 3-room are allowed.");
+            return;
+        }
+
         System.out.print("Units Available for " + type1 + ": ");
         int unitsType1 = scanner.nextInt();
-        
+
         System.out.print("Price for " + type1 + ": ");
         double priceType1 = scanner.nextDouble();
         scanner.nextLine(); // Consume newline
-        
+
         System.out.print("Flat Type 2 (e.g., 3-Room): ");
         String type2 = scanner.nextLine();
-        
+        if (!type2.equalsIgnoreCase("2-room") && !type2.equalsIgnoreCase("3-room")) {
+            System.out.println("Invalid Flat Type 2. Only 2-room and 3-room are allowed.");
+            return;
+        }
+
         System.out.print("Units Available for " + type2 + ": ");
         int unitsType2 = scanner.nextInt();
-        
+
         System.out.print("Price for " + type2 + ": ");
         double priceType2 = scanner.nextDouble();
         scanner.nextLine(); // Consume newline
-        
-        System.out.print("Application Opening Date (YYYY-MM-DD): ");
+
+        System.out.print("Application Opening Date (MM/dd/yyyy): ");
         String openingDateStr = scanner.nextLine();
         Date openingDate = parseDate(openingDateStr);
-        
-        System.out.print("Application Closing Date (YYYY-MM-DD): ");
+
+        System.out.print("Application Closing Date (MM/dd/yyyy): ");
         String closingDateStr = scanner.nextLine();
         Date closingDate = parseDate(closingDateStr);
-        
+
         System.out.print("Officer Slots Available: ");
         int officerSlot = scanner.nextInt();
         scanner.nextLine(); // Consume newline
-        
+
+        // Initialize the project with an empty list of officers
         BTOProject newProject = new BTOProject(
             name,
             neighborhood,
@@ -146,36 +157,42 @@ public class HDBManagerUI {
             officerSlot,
             new String[0] // Empty officers array
         );
-        
+
         projectController.createProject(newProject);
         System.out.println("Project created successfully!");
     }
+
+
     private void editProject() {
         System.out.println("\n=== Edit Project ===");
+
+        // Fetch the manager's projects
         List<BTOProject> myProjects = projectController.getProjectsByManager(manager.getNric());
-        
         if (myProjects.isEmpty()) {
             System.out.println("No projects found that you manage.");
             return;
         }
-        
+
+        // Display the list of projects to choose from
         System.out.println("\nYour Projects:");
         for (int i = 0; i < myProjects.size(); i++) {
             System.out.printf("%d. %s\n", i + 1, myProjects.get(i).getName());
         }
-        
+
+        // Get user input for the project selection
         System.out.print("Select project to edit (0 to cancel): ");
         int choice = scanner.nextInt();
         scanner.nextLine(); // Consume newline
-        
+
         if (choice == 0) return;
         if (choice < 1 || choice > myProjects.size()) {
             System.out.println("Invalid selection.");
             return;
         }
-        
-        BTOProject project = myProjects.get(choice - 1);
-        
+
+        BTOProject project = myProjects.get(choice - 1); // Get the selected project
+
+        // Show editing options
         System.out.println("\nEditing Project: " + project.getName());
         System.out.println("1. Edit Flat Type 1 (" + project.getType1() + ")");
         System.out.println("2. Edit Flat Type 2 (" + project.getType2() + ")");
@@ -183,34 +200,44 @@ public class HDBManagerUI {
         System.out.println("4. Edit Officer Slots");
         System.out.println("5. Cancel");
         System.out.print("Choose what to edit: ");
-        
         int editChoice = scanner.nextInt();
         scanner.nextLine(); // Consume newline
-        
+
+        // Process the editing choice
         switch (editChoice) {
             case 1 -> {
-                System.out.print("New Flat Type 1: ");
+                System.out.print("New Flat Type 1 (e.g., 2-room): ");
                 String newType1 = scanner.nextLine();
+                if (!newType1.equalsIgnoreCase("2-room") && !newType1.equalsIgnoreCase("3-room")) {
+                    System.out.println("Invalid Flat Type 1. Only 2-room and 3-room are allowed.");
+                    return;
+                }
                 System.out.print("New Units for " + newType1 + ": ");
                 int newUnits1 = scanner.nextInt();
                 System.out.print("New Price for " + newType1 + ": ");
                 double newPrice1 = scanner.nextDouble();
                 scanner.nextLine(); // Consume newline
-                
+
+                // Update the project details
                 project.setType1(newType1);
                 project.setUnitsType1(newUnits1);
                 project.setPriceType1(newPrice1);
                 System.out.println("Flat Type 1 updated successfully!");
             }
             case 2 -> {
-                System.out.print("New Flat Type 2: ");
+                System.out.print("New Flat Type 2 (e.g., 3-room): ");
                 String newType2 = scanner.nextLine();
+                if (!newType2.equalsIgnoreCase("2-room") && !newType2.equalsIgnoreCase("3-room")) {
+                    System.out.println("Invalid Flat Type 2. Only 2-room and 3-room are allowed.");
+                    return;
+                }
                 System.out.print("New Units for " + newType2 + ": ");
                 int newUnits2 = scanner.nextInt();
                 System.out.print("New Price for " + newType2 + ": ");
                 double newPrice2 = scanner.nextDouble();
                 scanner.nextLine(); // Consume newline
-                
+
+                // Update the project details
                 project.setType2(newType2);
                 project.setUnitsType2(newUnits2);
                 project.setPriceType2(newPrice2);
@@ -218,62 +245,29 @@ public class HDBManagerUI {
             }
             case 3 -> {
                 System.out.print("New Opening Date (YYYY-MM-DD): ");
-                Date newOpening = parseDate(scanner.nextLine());
+                String openingDateStr = scanner.nextLine();
+                Date newOpeningDate = parseDate(openingDateStr);
+
                 System.out.print("New Closing Date (YYYY-MM-DD): ");
-                Date newClosing = parseDate(scanner.nextLine());
-                
-                project.setOpeningDate(newOpening);
-                project.setClosingDate(newClosing);
+                String closingDateStr = scanner.nextLine();
+                Date newClosingDate = parseDate(closingDateStr);
+
+                // Update the project dates
+                project.setOpeningDate(newOpeningDate);
+                project.setClosingDate(newClosingDate);
                 System.out.println("Application dates updated successfully!");
             }
             case 4 -> {
                 System.out.print("New Officer Slots: ");
-                int newSlots = scanner.nextInt();
+                int newOfficerSlots = scanner.nextInt();
                 scanner.nextLine(); // Consume newline
-                project.setOfficerSlot(newSlots);
+
+                // Update the officer slots
+                project.setOfficerSlot(newOfficerSlots);
                 System.out.println("Officer slots updated successfully!");
             }
-            case 5 -> { return; }
+            case 5 -> System.out.println("Edit cancelled.");
             default -> System.out.println("Invalid choice.");
-        }
-    }
-
-    private void deleteProject() {
-        System.out.println("\n=== Delete Project ===");
-        List<BTOProject> myProjects = projectController.getProjectsByManager(manager.getNric());
-        
-        if (myProjects.isEmpty()) {
-            System.out.println("No projects found that you manage.");
-            return;
-        }
-        
-        System.out.println("\nYour Projects:");
-        for (int i = 0; i < myProjects.size(); i++) {
-            System.out.printf("%d. %s\n", i + 1, myProjects.get(i).getName());
-        }
-        
-        System.out.print("Select project to delete (0 to cancel): ");
-        int choice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-        
-        if (choice == 0) return;
-        if (choice < 1 || choice > myProjects.size()) {
-            System.out.println("Invalid selection.");
-            return;
-        }
-        
-        String projectName = myProjects.get(choice - 1).getName();
-        System.out.print("Are you sure you want to delete " + projectName + "? (yes/no): ");
-        String confirmation = scanner.nextLine();
-        
-        if ("yes".equalsIgnoreCase(confirmation)) {
-            if (projectController.deleteProject(projectName)) {
-                System.out.println("Project deleted successfully!");
-            } else {
-                System.out.println("Failed to delete project.");
-            }
-        } else {
-            System.out.println("Deletion cancelled.");
         }
     }
 
@@ -340,46 +334,44 @@ public class HDBManagerUI {
 
     private void approveApplications() {
         System.out.println("\n=== Approve/Reject Applications ===");
-        
-        // Get projects managed by this manager
+
+        // Fetch projects managed by this manager
         List<BTOProject> myProjects = projectController.getProjectsByManager(manager.getNric());
-        
+
         if (myProjects.isEmpty()) {
             System.out.println("No projects found that you manage.");
             return;
         }
-        
-        // Show projects to select from
+
+        // Display projects for selection
         System.out.println("\nYour Projects:");
         for (int i = 0; i < myProjects.size(); i++) {
             System.out.printf("%d. %s\n", i + 1, myProjects.get(i).getName());
         }
-        
+
         System.out.print("Select project to view applications (0 to cancel): ");
         int projectChoice = scanner.nextInt();
         scanner.nextLine(); // Consume newline
-        
+
         if (projectChoice == 0) return;
         if (projectChoice < 1 || projectChoice > myProjects.size()) {
             System.out.println("Invalid selection.");
             return;
         }
-    
-        BTOProject selectedProject = myProjects.get(projectChoice - 1);
-        
-        // Get pending applications for this project
 
+        BTOProject selectedProject = myProjects.get(projectChoice - 1);
+
+        // Fetch pending applications for the selected project
         List<Application> pendingApplications = applicationController.getApplicationsByProjectAndStatus(
             selectedProject.getName(),
             ApplicationStatus.PENDING
-            
-            );
-        
+        );
+
         if (pendingApplications.isEmpty()) {
             System.out.println("No pending applications for this project.");
             return;
         }
-        
+
         System.out.println("\nPending Applications:");
         for (int i = 0; i < pendingApplications.size(); i++) {
             Application app = pendingApplications.get(i);
@@ -388,31 +380,36 @@ public class HDBManagerUI {
                 app.getApplicantName(), 
                 app.getApplicantNric());
         }
-    
+
         System.out.print("Select application to process (0 to cancel): ");
         int appChoice = scanner.nextInt();
         scanner.nextLine(); // Consume newline
-        
+
         if (appChoice == 0) return;
         if (appChoice < 1 || appChoice > pendingApplications.size()) {
             System.out.println("Invalid selection.");
             return;
         }
-        
+
         Application selectedApp = pendingApplications.get(appChoice - 1);
-        
+
         System.out.println("\nApplication Details:");
-        System.out.println("- Project: " + selectedApp.getProjectName());
-        //System.out.println("- Applicant: " + selectedApp.getApplicantName());
-        System.out.println("- NRIC: " + selectedApp.getApplicantNric());
-        //System.out.println("- Applied On: " + selectedApp.getApplicationDate());
-        
+        System.out.printf("Project: %s\n", selectedApp.getProjectName());
+        System.out.printf("Flat Type Requested: %s\n", selectedApp.getFlatTypeString());
+        System.out.printf("Applicant NRIC: %s\n", selectedApp.getApplicantNric());
+
         System.out.print("\nApprove this application? (approve/reject/cancel): ");
         String decision = scanner.nextLine().toLowerCase();
-        
+
         switch (decision) {
             case "approve" -> {
-                // Check flat availability
+                FlatType flatType = selectedApp.getFlatType();
+                if (!flatType.equals(FlatType.TWO_ROOM) && !flatType.equals(FlatType.THREE_ROOM)) {
+                    System.out.println("Invalid flat type. Cannot approve.");
+                    return;
+                }
+
+                // Ensure availability before approving
                 if (managerController.approveApplication(selectedApp, selectedProject)) {
                     System.out.println("Application approved successfully!");
                 } else {
@@ -431,34 +428,35 @@ public class HDBManagerUI {
         }
     }
 
+
     
 
     private void approveOfficerRegistrations() {
-            System.out.println("\nManager Dashboard:");
+        System.out.println("\nManager Dashboard:");
     
-    // Display all officer registrations from specified file path
-    String filePath = "code/data/OfficerRegistrations.csv"; 
-    displayAllOfficerRegistrations(filePath);
-    
-    System.out.println("1. Manage Officer Registrations");
-    System.out.println("2. Logout");
+        // Display all officer registrations from specified file path
+        String filePath = "code/data/OfficerRegistrations.csv"; 
+        displayAllOfficerRegistrations(filePath);
+        
+        System.out.println("1. Manage Officer Registrations");
+        System.out.println("2. Logout");
 
-    int choice = scanner.nextInt();
-    scanner.nextLine(); // Consume the newline
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline
 
-    switch (choice) {
-        case 1 -> {
-            System.out.print("Enter officer NRIC to handle registration: ");
-            String officerNric = scanner.nextLine();
-            System.out.print("Approve registration? (true/false): ");
-            boolean approve = scanner.nextBoolean();
-            scanner.nextLine(); // Consume the newline
-            managerController.handleOfficerRegistration(officerNric, approve);
+        switch (choice) {
+            case 1 -> {
+                System.out.print("Enter officer NRIC to handle registration: ");
+                String officerNric = scanner.nextLine();
+                System.out.print("Approve registration? (true/false): ");
+                boolean approve = scanner.nextBoolean();
+                scanner.nextLine(); // Consume the newline
+                managerController.handleOfficerRegistration(officerNric, approve);
+            }
+            case 2 -> System.out.println("Logging out...");
+            default -> System.out.println("Invalid option. Returning to dashboard.");
         }
-        case 2 -> System.out.println("Logging out...");
-        default -> System.out.println("Invalid option. Returning to dashboard.");
     }
-}
 
     private void displayAllOfficerRegistrations(String filePath) {
         System.out.println("\nAll Officer Registrations:");
@@ -504,6 +502,45 @@ public class HDBManagerUI {
         manager.setPassword(newPassword);
         System.out.println("Password changed successfully.");
     }
+
+    private void deleteProject() {
+            System.out.println("\n=== Delete Project ===");
+            List<BTOProject> myProjects = projectController.getProjectsByManager(manager.getNric());
+            
+            if (myProjects.isEmpty()) {
+                System.out.println("No projects found that you manage.");
+                return;
+            }
+            
+            System.out.println("\nYour Projects:");
+            for (int i = 0; i < myProjects.size(); i++) {
+                System.out.printf("%d. %s\n", i + 1, myProjects.get(i).getName());
+            }
+            
+            System.out.print("Select project to delete (0 to cancel): ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+            
+            if (choice == 0) return;
+            if (choice < 1 || choice > myProjects.size()) {
+                System.out.println("Invalid selection.");
+                return;
+            }
+            
+            String projectName = myProjects.get(choice - 1).getName();
+            System.out.print("Are you sure you want to delete " + projectName + "? (yes/no): ");
+            String confirmation = scanner.nextLine();
+            
+            if ("yes".equalsIgnoreCase(confirmation)) {
+                if (projectController.deleteProject(projectName)) {
+                    System.out.println("Project deleted successfully!");
+                } else {
+                    System.out.println("Failed to delete project.");
+                }
+            } else {
+                System.out.println("Deletion cancelled.");
+            }
+        }
 
     
 }

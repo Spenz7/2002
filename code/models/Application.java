@@ -13,10 +13,27 @@ public class Application {
     private ApplicationStatus status; // Current status of the application (e.g., "Pending", "Approved")
 
     // Constructor
-    public Application(int applicationId, String applicantNric, String applicantName, String projectName, FlatType flatType, ApplicationStatus status) {
+    public Application(
+        int applicationId,
+        String applicantNric,
+        String applicantName,
+        String projectName,
+        FlatType flatType,
+        ApplicationStatus status,
+        boolean isSingle,
+        int age
+    ) {
+        // Eligibility validation
+        if (isSingle && age >= 35 && !flatType.equals(FlatType.TWO_ROOM)) {
+            throw new IllegalArgumentException("Singles can only apply for 2-room flats.");
+        }
+        if (!isSingle && age >= 21 && !flatType.equals(FlatType.TWO_ROOM) && !flatType.equals(FlatType.THREE_ROOM)) {
+            throw new IllegalArgumentException("Married applicants can only apply for 2-room or 3-room flats.");
+        }
+
         this.applicationId = applicationId;
         this.applicantNric = applicantNric;
-        this.applicantName = applicantName; 
+        this.applicantName = applicantName;
         this.projectName = projectName;
         this.flatType = flatType; // Use FlatType enum
         this.status = status;
@@ -89,7 +106,7 @@ public class Application {
                 '}';
     }
 
-    // Add a method for getting the string representation of FlatType
+    // Method for Getting the String Representation of FlatType
     public String getFlatTypeString() {
         return flatType != null ? flatType.getDisplayName() : "Unknown";
     }
